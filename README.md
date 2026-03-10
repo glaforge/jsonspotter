@@ -1,4 +1,4 @@
-# Lenient JSON Spotter
+# JsonSpotter
 
 Lenient JSON Spotter is a lightweight Java utility designed to extract the longest well-balanced JSON-like structure (objects using `{}` or arrays using `[]`) from a given text string. This is particularly useful when working with outputs from Large Language Models (LLMs) that often wrap JSON payloads in Markdown code blocks or include conversational text before and after the actual JSON.
 
