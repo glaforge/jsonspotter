@@ -6,6 +6,7 @@
     <artifactId>jsonspotter</artifactId>
     <version>0.1.1-SNAPSHOT</version>
 
+    <name>JsonSpotter</name>
     <description>Lenient JSON Spotter</description>
     <url>https://github.com/glaforge/jsonspotter</url>
 
@@ -45,6 +46,7 @@
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- JUnit 6.0 dependencies -->
