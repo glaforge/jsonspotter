@@ -41,7 +41,7 @@ jobs:
   build:
     needs: [ precheck ]
     # execute this job _only_ if version is SNAPSHOT
-    if: endsWith(${{ needs.precheck.outputs.VERSION }}, '-SNAPSHOT')
+    if: endsWith(needs.precheck.outputs.VERSION, '-SNAPSHOT')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
