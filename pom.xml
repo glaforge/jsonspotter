@@ -4,7 +4,7 @@
 
     <groupId>io.github.glaforge.jsonspotter</groupId>
     <artifactId>jsonspotter</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
 
     <description>Lenient JSON Spotter</description>
     <url>https://github.com/glaforge/jsonspotter</url>
@@ -28,7 +28,7 @@
         <connection>scm:git:git://github.com/glaforge/jsonspotter.git</connection>
         <developerConnection>scm:git:git@github.com:glaforge/jsonspotter.git</developerConnection>
         <url>https://github.com/glaforge/jsonspotter/tree/main</url>
-        <tag>v0.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
