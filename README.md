@@ -18,14 +18,15 @@ import io.github.glaforge.jsonspotter.JsonSpotter;
 
 public class Example {
     public static void main(String[] args) {
-        String llmOutput = "Here is the JSON you requested:\n" +
-                           "```json\n" +
-                           "{\n" +
-                           "  \"name\": \"Gemini\",\n" +
-                           "  \"type\": \"AI\"\n" +
-                           "}\n" +
-                           "```\n" +
-                           "Hope this helps!";
+        String llmOutput = """
+                           Here is the JSON you requested:
+                           ```json
+                           {
+                             "name": "Gemini",
+                             "type": "AI"
+                           }
+                           ```
+                           Hope this helps!""";
 
         String extractedJson = JsonSpotter.extractJson(llmOutput);
         System.out.println(extractedJson);
@@ -50,7 +51,12 @@ import tools.jackson.core.json.JsonReadFeature;
 
 public class LenientParsingExample {
     public static void main(String[] args) throws Exception {
-        String rawOutput = "I found this lenient JSON: { unquoted: 'single quotes', trailing: 'comma', // java comment\n }";
+        String rawOutput = """
+                I found this lenient JSON: {
+                  unquoted: 'single quotes',
+                  trailing: 'comma',
+                  // java comment
+                }""";
 
         // Extract the JSON-like structure
         String extracted = JsonSpotter.extractJson(rawOutput);
@@ -74,7 +80,7 @@ public class LenientParsingExample {
 
         // Parse the lenient JSON
         JsonNode node = mapper.readTree(extracted);
-        System.out.println(node.get("unquoted").asText()); // single quotes
+        System.out.println(node.get("unquoted").asString()); // single quotes
     }
 }
 ```
