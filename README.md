@@ -9,6 +9,30 @@ Lenient JSON Spotter is a lightweight Java utility designed to extract the longe
 - **Resilient & Fast:** Guaranteed $O(N)$ extraction performance, securely handling massive or heavily malformed payloads without Denial-of-Service ($O(N^2)$) risks.
 - Strictly rejects non-JSON text that simply happens to contain coincidentally balanced brackets.
 
+## Getting Started
+
+To use the `jsonspotter` library in your project, add the following dependency to your build configuration:
+
+### Maven
+
+Add the following dependency to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.github.glaforge.jsonspotter</groupId>
+    <artifactId>jsonspotter</artifactId>
+    <version>0.1.2</version>
+</dependency>
+```
+
+### Gradle
+
+Add the following to your `build.gradle`:
+
+```gradle
+implementation 'io.github.glaforge.jsonspotter:jsonspotter:0.1.2'
+```
+
 ## Usage
 
 ### Basic Extraction
