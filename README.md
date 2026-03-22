@@ -6,7 +6,7 @@ Lenient JSON Spotter is a lightweight Java utility designed to extract the longe
 
 - Extracts JSON objects (`{...}`) and arrays (`[...]`) from arbitrary text using a purely native, dependency-free **Recursive Descent Parser**.
 - **Natively Lenient:** Understands and structurally validates lenient JSON features during extraction. It properly interacts with Java/YAML comments, unquoted keys, single quotes, trailing commas, missing array values, and non-standard number formats (`NaN`, `Infinity`, `.5`, `+42`).
-- **Resilient & Fast:** Guaranteed $O(N)$ extraction performance, securely handling massive or heavily malformed payloads without Denial-of-Service ($O(N^2)$) risks.
+- **Resilient & Fast:** Efficiently handles massive or malformed payloads. It uses a single-pass scanner that jumps to the end of successfully parsed structures to minimize redundant processing. While `O(N^2)` is theoretically possible for certain deeply nested unclosed structures, it remains fast and secure for typical LLM outputs and real-world scenarios.
 - Strictly rejects non-JSON text that simply happens to contain coincidentally balanced brackets.
 
 ## Getting Started
