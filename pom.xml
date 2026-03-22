@@ -36,8 +36,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>6.0.0-M1</junit.version> <!-- Using JUnit 6.0 as requested -->
-        <jackson.version>3.0.0-rc4</jackson.version> <!-- Using Jackson 3.0 as requested -->
+        <junit.version>6.0.3</junit.version>
+        <jackson.version>3.1.0</jackson.version>
     </properties>
 
     <dependencies>
@@ -46,7 +46,7 @@
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
-            <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 
         <!-- JUnit 6.0 dependencies -->

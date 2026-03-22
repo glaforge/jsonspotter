@@ -25,8 +25,20 @@ public class JsonSpotterTest {
 
     @Test
     public void testExtractJsonWithMarkdown() {
-        String input = "Here is the JSON you requested:\n```json\n{\n  \"name\": \"Gemini\",\n  \"type\": \"AI\"\n}\n```\nHope this helps!";
-        String expected = "{\n  \"name\": \"Gemini\",\n  \"type\": \"AI\"\n}";
+        String input = """
+                Here is the JSON you requested:
+                ```json
+                {
+                  "name": "Gemini",
+                  "type": "AI"
+                }
+                ```
+                Hope this helps!""";
+        String expected = """
+                {
+                  "name": "Gemini",
+                  "type": "AI"
+                }""";
         String result = JsonSpotter.extractJson(input);
         assertEquals(expected, result);
     }
@@ -73,9 +85,11 @@ public class JsonSpotterTest {
 
     @Test
     public void testJackson3Integration() throws Exception {
-        // Since Jackson 3 uses JsonMapper.builder().build() we use that
         JsonMapper mapper = JsonMapper.builder().build();
-        String rawOutput = "```json\n{\"test\": 123}\n```";
+        String rawOutput = """
+                ```json
+                {"test": 123}
+                ```""";
         String extracted = JsonSpotter.extractJson(rawOutput);
         
         try {
@@ -104,24 +118,24 @@ public class JsonSpotterTest {
                 .enable(JsonReadFeature.ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS)
                 .build();
 
-        String rawOutput = "I found this lenient JSON: " +
-                "{ " +
-                "  unquoted: 'single quotes', " +
-                "  trailing: 'comma', " +
-                "  leading_zero: 007, " +
-                "  plus_sign: +42, " +
-                "  decimal: .5, " +
-                "  // java comment\n" +
-                "  # yaml comment\n" +
-                "  array: [1, , 3,], " +
-                "}";
+        String rawOutput = """
+                I found this lenient JSON: {
+                  unquoted: 'single quotes',
+                  trailing: 'comma',
+                  leading_zero: 007,
+                  plus_sign: +42,
+                  decimal: .5,
+                  // java comment
+                  # yaml comment
+                  array: [1, , 3,]
+                }""";
 
         String extracted = JsonSpotter.extractJson(rawOutput);
         
         try {
             JsonNode node = mapper.readTree(extracted);
-            assertEquals("single quotes", node.get("unquoted").asText());
-            assertEquals("comma", node.get("trailing").asText());
+            assertEquals("single quotes", node.get("unquoted").asString());
+            assertEquals("comma", node.get("trailing").asString());
             assertEquals(7, node.get("leading_zero").asInt());
             assertEquals(42, node.get("plus_sign").asInt());
             assertEquals(0.5, node.get("decimal").asDouble());
@@ -130,5 +144,77 @@ public class JsonSpotterTest {
         } catch (JacksonException e) {
             fail("Should have parsed leniently: " + e.getMessage());
         }
+    }
+
+    @Test
+    public void testJavaAndYamlComments() {
+        String input = """
+                Text before {
+                  // single line java
+                  "a": 1,
+                  /* multi-line
+                     java */
+                  "b": 2,
+                  # yaml comment
+                  "c": 3
+                } Text after""";
+        String expected = """
+                {
+                  // single line java
+                  "a": 1,
+                  /* multi-line
+                     java */
+                  "b": 2,
+                  # yaml comment
+                  "c": 3
+                }""";
+        assertEquals(expected, JsonSpotter.extractJson(input));
+    }
+
+    @Test
+    public void testUnquotedKeysAndSingleQuotes() {
+        String input = "  { unquoted_key$1: 'single quoted string', another: 42 }  ";
+        String expected = "{ unquoted_key$1: 'single quoted string', another: 42 }";
+        assertEquals(expected, JsonSpotter.extractJson(input));
+    }
+
+    @Test
+    public void testTrailingCommasAndMissingValues() {
+        String input = "Array: [1, 2, , 4,], Object: {\"a\": 1, }";
+        // Longest is the array (14 chars) vs object (11 chars)
+        assertEquals("[1, 2, , 4,]", JsonSpotter.extractJson(input));
+        
+        // Also test the object by itself
+        assertEquals("{\"a\": 1, }", JsonSpotter.extractJson("Object: {\"a\": 1, }"));
+    }
+
+    @Test
+    public void testNonStandardNumbers() {
+        String input = "{\"plus\": +42, \"decimal\": .5, \"nan\": NaN, \"inf\": Infinity, \"minusInf\": -Infinity}";
+        String expected = "{\"plus\": +42, \"decimal\": .5, \"nan\": NaN, \"inf\": Infinity, \"minusInf\": -Infinity}";
+        assertEquals(expected, JsonSpotter.extractJson(input));
+    }
+
+    @Test
+    public void testRejectsFakeJson() {
+        String input = "This { is not { valid } json }"; 
+        assertEquals("", JsonSpotter.extractJson(input));
+    }
+
+    @Test
+    public void testPerformanceScalability() {
+        // Construct a massive string of broken brackets
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 50000; i++) {
+            sb.append("{ broken ");
+        }
+        sb.append(" {\"valid\": true}");
+        
+        long start = System.currentTimeMillis();
+        String result = JsonSpotter.extractJson(sb.toString());
+        long duration = System.currentTimeMillis() - start;
+        
+        assertEquals("{\"valid\": true}", result);
+        assertTrue(duration < 2000, "Should complete quickly, took " + duration + "ms");
     }
 }
